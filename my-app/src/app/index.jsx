@@ -7,6 +7,8 @@ import {
   StyleSheet,
 } from 'react-native';
 
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 import CardForm from '../components/card-form';
 import CardItem from '../components/card-item';
 
@@ -23,44 +25,22 @@ export default function Index() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Native App</Text>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.header}>Native App</Text>
 
-     {/* <FlatList
-        data={cards}
-        renderItem={({ item }) => (
-          <CardItem item={item} />
-        )}
-        keyExtractor={(item) => item.id}
-        ListHeaderComponent={
-          <CardForm onAddCard={handleAddCard} />
-        }
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>
-              No cards yet. Create your first card!
-            </Text>
-          </View>
-        }
-        contentContainerStyle={styles.cardList}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      />  */}
+        <CardForm onAddCard={handleAddCard} />
 
-
-      <CardForm onAddCard={handleAddCard} />
-
-      <FlatList
-        data={cards}
-        renderItem={({ item }) => (
-          <CardItem item={item} />
-        )}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.cardList}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      />
-    </SafeAreaView>
+        <FlatList
+          data={cards}
+          renderItem={({ item }) => <CardItem item={item} />}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.cardList}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
