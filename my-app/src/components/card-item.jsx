@@ -11,6 +11,7 @@ import {
 export default function CardItem({ item }) {
   const handlePress = () => {
     Alert.alert('Card Selected', `${item.title} clicked!`);
+    console.log('Button pressed!');
   };
 
   return (
