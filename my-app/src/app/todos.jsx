@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useCallback } from "react";
+
 import {
   SafeAreaView,
   FlatList,
@@ -8,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 
+import { useFocusEffect } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import TodoItem from "../components/todo-item";
 
@@ -21,32 +23,31 @@ const fetchTodos = async () => {
   return response.json();
 };
 
+
 export default function TodosScreen() {
-  const { data, isLoading, isError, error, refetch, isFetching, isPending } = useQuery({
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch,
+    isFetching,
+  } = useQuery({
     queryKey: ["todos"],
     queryFn: fetchTodos,
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log("Todos screen is focused");
+    }, [])
+  );
 
   if (isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#2563EB" />
         <Text style={styles.message}>Loading todos...</Text>
-      </View>
-    );
-  }
-  useFocusEffect(() => {
-    if (isPending) {
-      console.log("Refetching todos...");
-    }
-  });
-
-
-  if (isPending) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
-        <Text style={styles.message}>Refetching todos...</Text>
       </View>
     );
   }
@@ -67,7 +68,9 @@ export default function TodosScreen() {
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Todo List</Text>
 
-      <Text style={styles.subtitle}>JSONPlaceholder • {data.length} tasks</Text>
+      <Text style={styles.subtitle}>
+        JSONPlaceholder • {data.length} tasks
+      </Text>
 
       <FlatList
         data={data}
@@ -81,6 +84,7 @@ export default function TodosScreen() {
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
