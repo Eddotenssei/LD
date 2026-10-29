@@ -22,7 +22,7 @@ const fetchTodos = async () => {
 };
 
 export default function TodosScreen() {
-  const { data, isLoading, isError, error, refetch, isRefetching } = useQuery({
+  const { data, isLoading, isError, error, refetch, isFetching, isPending } = useQuery({
     queryKey: ["todos"],
     queryFn: fetchTodos,
   });
@@ -32,6 +32,21 @@ export default function TodosScreen() {
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#2563EB" />
         <Text style={styles.message}>Loading todos...</Text>
+      </View>
+    );
+  }
+  useFocusEffect(() => {
+    if (isPending) {
+      console.log("Refetching todos...");
+    }
+  });
+
+
+  if (isPending) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#2563EB" />
+        <Text style={styles.message}>Refetching todos...</Text>
       </View>
     );
   }
@@ -60,7 +75,7 @@ export default function TodosScreen() {
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
-        refreshing={isRefetching}
+        refreshing={isFetching}
         onRefresh={refetch}
       />
     </SafeAreaView>
