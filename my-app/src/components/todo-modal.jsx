@@ -1,4 +1,3 @@
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { UpdateTodo } from "../api/todos.api";
@@ -50,7 +49,7 @@ export default function TodoModal({ visible, onClose, id, todoData }) {
                 title: todo.title.trim(),
                 completed: todo.completed,
               }
-            : item
+            : item,
         );
       });
 
@@ -77,11 +76,7 @@ export default function TodoModal({ visible, onClose, id, todoData }) {
   };
 
   return (
-    <Modal
-      animationType="slide"
-      visible={visible}
-      onRequestClose={onClose}
-    >
+    <Modal animationType="slide" visible={visible} onRequestClose={onClose}>
       <View style={styles.container}>
         <Text style={styles.header}>Edit Todo</Text>
 
@@ -123,16 +118,11 @@ export default function TodoModal({ visible, onClose, id, todoData }) {
           disabled={updateTodoMutation.isPending}
         >
           <Text style={styles.buttonText}>
-            {updateTodoMutation.isPending
-              ? "Updating..."
-              : "Save Changes"}
+            {updateTodoMutation.isPending ? "Updating..." : "Save Changes"}
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.closeButton}
-          onPress={onClose}
-        >
+        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Text style={styles.buttonText}>Close Modal</Text>
         </TouchableOpacity>
       </View>
