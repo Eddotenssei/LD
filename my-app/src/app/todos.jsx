@@ -1,4 +1,5 @@
-import React, { useCallback } from "react";
+import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import {
   SafeAreaView,
@@ -6,62 +7,57 @@ import {
   Text,
   View,
   StyleSheet,
-  ActivityIndicator,
 } from "react-native";
 
-import { useFocusEffect } from "expo-router";
-import { useQuery } from "@tanstack/react-query";
+import { GetTodos } from "../api/todos.api";
 import TodoItem from "../components/todo-item";
-
-const fetchTodos = async () => {
-  const response = await fetch("https://jsonplaceholder.typicode.com/todos");
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch todos");
-  }
-
-  return response.json();
-};
-
+import TodoModal from "../components/todo-modal";
 
 export default function TodosScreen() {
+  const [visible, setVisible] = useState(false);
+  const [id, setId] = useState(null);
+  const [todos, setTodos] = useState([]);
+
   const {
     data,
-    isLoading,
+    isPending,
+    isFetching,
     isError,
     error,
     refetch,
-    isFetching,
   } = useQuery({
     queryKey: ["todos"],
-    queryFn: fetchTodos,
+    queryFn: GetTodos,
   });
 
-  useFocusEffect(
-    useCallback(() => {
-      console.log("Todos screen is focused");
-    }, [])
-  );
+  useEffect(() => {
+    if (data) {
+      setTodos(data);
+    }
+  }, [data]);
 
-  if (isLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
-        <Text style={styles.message}>Loading todos...</Text>
-      </View>
+  const onClose = () => {
+    setVisible(false);
+  };
+
+  const onUpdate = (updatedTodo) => {
+    setTodos((prev) =>
+      prev.map((todo) =>
+        todo.id === updatedTodo.id
+          ? { ...todo, ...updatedTodo }
+          : todo
+      )
     );
+
+    setVisible(false);
+  };
+
+  if (isPending) {
+    return <Text>Loading...</Text>;
   }
 
   if (isError) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.error}>{error.message}</Text>
-
-        <Text style={styles.retry} onPress={() => refetch()}>
-          Try again
-        </Text>
-      </View>
-    );
+    return <Text>Error: {error.message}</Text>;
   }
 
   return (
@@ -69,22 +65,37 @@ export default function TodosScreen() {
       <Text style={styles.header}>Todo List</Text>
 
       <Text style={styles.subtitle}>
-        JSONPlaceholder • {data.length} tasks
+        JSONPlaceholder • {todos.length} tasks
       </Text>
 
       <FlatList
-        data={data}
-        renderItem={({ item }) => <TodoItem item={item} />}
+        data={todos}
+        renderItem={({ item }) => (
+          <TodoItem
+            item={item}
+            onPress={() => {
+              setId(item.id);
+              setVisible(true);
+            }}
+          />
+        )}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
         refreshing={isFetching}
         onRefresh={refetch}
       />
+
+      <TodoModal
+        visible={visible}
+        onClose={onClose}
+        id={id}
+        todoData={todos.find((todo) => todo.id === id)}
+        onUpdate={onUpdate}
+      />
     </SafeAreaView>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -106,25 +117,5 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingBottom: 24,
-  },
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  message: {
-    marginTop: 12,
-    color: "#64748B",
-  },
-  error: {
-    color: "#DC2626",
-    fontSize: 16,
-    textAlign: "center",
-  },
-  retry: {
-    marginTop: 16,
-    color: "#2563EB",
-    fontWeight: "bold",
   },
 });
