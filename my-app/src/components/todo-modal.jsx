@@ -1,23 +1,22 @@
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { UpdateTodo } from "../api/todos.api";
 
 import {
   Alert,
   Modal,
+  StyleSheet,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  StyleSheet,
-  Switch,
 } from "react-native";
 
-export default function TodoModal({
-  visible,
-  onClose,
-  id,
-  todoData,
-  onUpdate,
-}) {
+export default function TodoModal({ visible, onClose, id, todoData }) {
+  const queryClient = useQueryClient();
+
   const [todo, setTodo] = useState({
     title: "",
     completed: false,
@@ -32,19 +31,49 @@ export default function TodoModal({
     }
   }, [visible, todoData]);
 
+  const updateTodoMutation = useMutation({
+    mutationFn: async (updatedTodo) => {
+      return await UpdateTodo({
+        id,
+        todo: updatedTodo,
+      });
+    },
+
+    onSuccess: (updatedTodo) => {
+      queryClient.setQueryData(["todos"], (oldTodos) => {
+        if (!oldTodos) return oldTodos;
+
+        return oldTodos.map((item) =>
+          item.id === Number(id)
+            ? {
+                ...item,
+                title: todo.title.trim(),
+                completed: todo.completed,
+              }
+            : item
+        );
+      });
+
+      Alert.alert("Success", "Todo updated successfully");
+      onClose();
+    },
+
+    onError: (error) => {
+      console.log("Update error:", error);
+      Alert.alert("Error", error.message || "Failed to update todo");
+    },
+  });
+
   const handleSave = () => {
     if (!todo.title.trim()) {
       Alert.alert("Error", "Todo title cannot be empty");
       return;
     }
 
-    onUpdate({
-      id,
-      title: todo.title,
+    updateTodoMutation.mutate({
+      title: todo.title.trim(),
       completed: todo.completed,
     });
-
-    Alert.alert("Success", "Todo updated successfully");
   };
 
   return (
@@ -91,8 +120,13 @@ export default function TodoModal({
         <TouchableOpacity
           style={styles.updateButton}
           onPress={handleSave}
+          disabled={updateTodoMutation.isPending}
         >
-          <Text style={styles.buttonText}>Save Changes</Text>
+          <Text style={styles.buttonText}>
+            {updateTodoMutation.isPending
+              ? "Updating..."
+              : "Save Changes"}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
