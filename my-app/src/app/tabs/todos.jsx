@@ -9,9 +9,9 @@ import {
   StyleSheet,
 } from "react-native";
 
-import { GetTodos } from "../api/todos.api";
-import TodoItem from "../components/todo-item";
-import TodoModal from "../components/todo-modal";
+import { GetTodos } from "../../api/todos.api";
+import TodoItem from "../../components/todo-item";
+import TodoModal from "../../components/todo-modal";
 
 export default function TodosScreen() {
   const [visible, setVisible] = useState(false);
@@ -75,7 +75,7 @@ export default function TodosScreen() {
             item={item}
             onPress={() => {
               setId(item.id);
-              setVisible(true);
+              setVisible(true); 
             }}
           />
         )}

@@ -1,20 +1,29 @@
-import { Tabs } from 'expo-router';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-
+import { Stack } from "expo-router";
+import {
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 
-export default function TabLayout() {
+export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Tabs>
-        <Tabs.Screen
-          name="index"
+      <Stack>
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+          }}
         />
-      <Tabs.Screen
-        name="todos"
-      />
-    </Tabs>
+
+        <Stack.Screen
+          name="screens"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack>
     </QueryClientProvider>
   );
 }

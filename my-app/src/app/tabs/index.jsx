@@ -1,18 +1,24 @@
 
-import React, { useState } from 'react';
+import { useRouter } from "expo-router";
+import { useState } from "react";
+
 import {
-  SafeAreaView,
   FlatList,
-  Text,
+  SafeAreaView,
   StyleSheet,
-} from 'react-native';
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
 
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import CardForm from '../components/card-form';
-import CardItem from '../components/card-item';
+import CardForm from "../../components/card-form";
+import CardItem from "../../components/card-item";
 
 export default function Index() {
+  const router = useRouter();
+
   const [cards, setCards] = useState([]);
 
   const handleAddCard = (newCard) => {
@@ -39,6 +45,16 @@ export default function Index() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         />
+
+        <TouchableOpacity
+          onPress={() => router.push("/screens/test")}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>
+            Go to Test Screen
+          </Text>
+        </TouchableOpacity>
+
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -47,18 +63,29 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: "#F1F5F9",
     paddingHorizontal: 20,
   },
   header: {
     fontSize: 26,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginTop: 15,
     marginBottom: 20,
-    color: '#1E293B',
+    color: "#1E293B",
   },
   cardList: {
     paddingBottom: 20,
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
