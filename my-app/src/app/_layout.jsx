@@ -11,7 +11,7 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <Stack>
         <Stack.Screen
-          name="(tabs)"
+          name="tabs"
           options={{
             headerShown: false,
           }}
