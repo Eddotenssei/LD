@@ -1,21 +1,19 @@
-
 import { Stack } from "expo-router";
 
 export default function TodosLayout() {
   return (
-    <Stack>
+    <Stack >
       <Stack.Screen
         name="index"
         options={{
-          headerShown: false,
+          title: "todos",
         }}
       />
 
       <Stack.Screen
         name="[id]"
         options={{
-          title: "Todo Details",
-          headerBackTitle: "Todos",
+          title: "todo",
         }}
       />
     </Stack>

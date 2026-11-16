@@ -1,17 +1,9 @@
-
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
-import {
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { FlatList, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import CardForm from "../../components/card-form";
 import CardItem from "../../components/card-item";
@@ -50,11 +42,8 @@ export default function Index() {
           onPress={() => router.push("/screens/test")}
           style={styles.button}
         >
-          <Text style={styles.buttonText}>
-            Go to Test Screen
-          </Text>
+          <Text style={styles.buttonText}>Go to Test Screen</Text>
         </TouchableOpacity>
-
       </SafeAreaView>
     </SafeAreaProvider>
   );
