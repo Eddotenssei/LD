@@ -6,7 +6,7 @@ export default function ScreensLayout() {
       <Stack.Screen
         name="test"
         options={{
-          title: "Test Screen",
+          title: "test",
           headerShown: true,
         }}
       />
