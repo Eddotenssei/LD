@@ -1,21 +1,20 @@
+
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
 
 import {
   SafeAreaView,
   FlatList,
   Text,
-  View,
   StyleSheet,
 } from "react-native";
 
-import { GetTodos } from "../../api/todos.api";
-import TodoItem from "../../components/todo-item";
-import TodoModal from "../../components/todo-modal";
+import { GetTodos } from "../../../api/todos.api";
+import TodoItem from "../../../components/todo-item";
 
 export default function TodosScreen() {
-  const [visible, setVisible] = useState(false);
-  const [id, setId] = useState(null);
+  const router = useRouter();
   const [todos, setTodos] = useState([]);
 
   const {
@@ -35,22 +34,6 @@ export default function TodosScreen() {
       setTodos(data);
     }
   }, [data]);
-
-  const onClose = () => {
-    setVisible(false);
-  };
-
-  const onUpdate = (updatedTodo) => {
-    setTodos((prev) =>
-      prev.map((todo) =>
-        todo.id === updatedTodo.id
-          ? { ...todo, ...updatedTodo }
-          : todo
-      )
-    );
-
-    setVisible(false);
-  };
 
   if (isPending) {
     return <Text>Loading...</Text>;
@@ -74,8 +57,7 @@ export default function TodosScreen() {
           <TodoItem
             item={item}
             onPress={() => {
-              setId(item.id);
-              setVisible(true); 
+              router.push(`/todos/${item.id}`);
             }}
           />
         )}
@@ -84,14 +66,6 @@ export default function TodosScreen() {
         showsVerticalScrollIndicator={false}
         refreshing={isFetching}
         onRefresh={refetch}
-      />
-
-      <TodoModal
-        visible={visible}
-        onClose={onClose}
-        id={id}
-        todoData={todos.find((todo) => todo.id === id)}
-        onUpdate={onUpdate}
       />
     </SafeAreaView>
   );

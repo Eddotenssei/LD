@@ -1,3 +1,4 @@
+
 import { Stack } from "expo-router";
 import {
   QueryClient,
@@ -11,14 +12,7 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <Stack>
         <Stack.Screen
-          name="tabs"
-          options={{
-            headerShown: false,
-          }}
-        />
-
-        <Stack.Screen
-          name="screens"
+          name="(tabs)"
           options={{
             headerShown: false,
           }}
