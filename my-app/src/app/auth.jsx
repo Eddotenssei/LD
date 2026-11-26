@@ -17,8 +17,9 @@ export default function AuthScreen() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
       Alert.alert(
         "Missing information",
@@ -27,7 +28,19 @@ export default function AuthScreen() {
       return;
     }
 
-    login();
+    setLoading(true);
+
+    const success = await login(email.trim(), password);
+
+    setLoading(false);
+
+    if (!success) {
+      Alert.alert(
+        "Login failed",
+        "Incorrect email or password, or the server is unavailable."
+      );
+      return;
+    }
   };
 
   return (
@@ -48,6 +61,7 @@ export default function AuthScreen() {
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
+          autoCorrect={false}
         />
 
         <Text style={styles.label}>Password</Text>
@@ -63,9 +77,10 @@ export default function AuthScreen() {
         <TouchableOpacity
           style={styles.button}
           onPress={handleLogin}
+          disabled={loading}
         >
           <Text style={styles.buttonText}>
-            Login
+            {loading ? "Logging in..." : "Login"}
           </Text>
         </TouchableOpacity>
       </View>

@@ -1,6 +1,6 @@
 export const GetTodos = async () => {
   const response = await fetch(
-    `https://jsonplaceholder.typicode.com/todos`
+    `http://192.168.1.5:3000/todos`
   );
 
   if (!response.ok) {
@@ -12,7 +12,7 @@ export const GetTodos = async () => {
 
 export const GetTodo = async (id) => {
   const response = await fetch(
-    `https://jsonplaceholder.typicode.com/todos/${id}`
+    `http://192.168.1.5:3000/todos/${id}`
   );
 
   if (!response.ok) {
@@ -24,7 +24,7 @@ export const GetTodo = async (id) => {
 
 export const UpdateTodo = async ({ id, todo }) => {
   const response = await fetch(
-    `https://jsonplaceholder.typicode.com/todos/${id}`,
+    `http://192.168.1.5:3000  /todos/${id}`,
     {
       method: "PUT",
       headers: {
